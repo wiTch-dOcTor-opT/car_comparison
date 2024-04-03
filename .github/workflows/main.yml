@@ -20,7 +20,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
         with:
-          region: ${{ AWS_REGION }}
+          region: ${{ env.AWS_REGION }}
 
       - name: Build and push Docker image
         run: |
