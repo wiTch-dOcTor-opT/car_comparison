@@ -13,8 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set AWS region
-        run: echo "AWS_DEFAULT_REGION=${{ env.AWS_REGION }}" >> $GITHUB_ENV
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -22,6 +26,8 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+        with:
+          registry-type: public
 
       - name: Build and push Docker image
         run: |
@@ -34,5 +40,5 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: "us-east-1"
-          AWS_ACCOUNT_ID: "593173712715"
+          AWS_REGION: us-east-1
+          AWS_ACCOUNT_ID: 593173712715
