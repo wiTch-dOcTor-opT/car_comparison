@@ -11,4 +11,4 @@ COPY target/your-application.jar /app/comparison-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
 
 # Command to run the application
-CMD ["java", "-jar", "comparison-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "comparison-0.0.1-SNAPSHOT.jar", "-Dspring.profiles.active=production"]
