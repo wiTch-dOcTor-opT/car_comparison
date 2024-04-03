@@ -28,7 +28,7 @@ jobs:
 
       - name: Build JAR file
         run: |
-          ./mvnw package
+          ./mvnw package -Dspring.profiles.active=production
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
