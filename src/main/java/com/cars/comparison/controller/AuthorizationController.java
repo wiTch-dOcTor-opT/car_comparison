@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/resource")
+@RequestMapping("/v1/resource")
 @RequiredArgsConstructor
 public class AuthorizationController {
     @GetMapping

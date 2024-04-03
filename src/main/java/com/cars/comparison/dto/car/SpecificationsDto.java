@@ -32,9 +32,6 @@ public class SpecificationsDto {
     @NotBlank(message = "Drivetrain is required")
     private String drivetrain;
 
-    @NotBlank(message = "Capacity is required")
-    private String capacity;
-
     @NotBlank(message = "Doors is required")
     private String doors;
 

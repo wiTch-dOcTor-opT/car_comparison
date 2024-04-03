@@ -1,7 +1,6 @@
 package com.cars.comparison.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,8 +15,8 @@ import lombok.*;
 public class Specifications extends BaseEntity{
 
     // Engine specifications
-    @Column(name = "engine_type")
-    private String engineType;
+    @Column(name = "type")
+    private String type;
 
     @Column(name = "engine")
     private String engine;
@@ -75,6 +74,9 @@ public class Specifications extends BaseEntity{
 
     @Column(name = "rear_tyre_size")
     private String rearTyreSize;
+
+    @Column(name = "dimensions")
+    private String dimensions;
 
     @OneToOne
     @JsonBackReference

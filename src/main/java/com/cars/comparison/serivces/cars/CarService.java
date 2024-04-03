@@ -19,14 +19,19 @@ import java.util.List;
 @Service
 public class CarService {
 
-    @Autowired
-    private CarRepository carRepository;
+    private final CarRepository carRepository;
+
+    private final CarMapper carMapper;
+
+    private final CarSimilarityCalculator carSimilarityCalculator;
 
     @Autowired
-    private CarMapper carMapper;
-
-    @Autowired
-    private CarSimilarityCalculator carSimilarityCalculator;
+    public CarService (CarRepository carRepository, CarMapper carMapper,
+                                 CarSimilarityCalculator carSimilarityCalculator){
+        this.carMapper = carMapper;
+        this.carRepository = carRepository;
+        this.carSimilarityCalculator = carSimilarityCalculator;
+    }
 
     @Transactional
     public boolean addCar(CarDto carDto) {
@@ -66,43 +71,47 @@ public class CarService {
     }
 
     public String getComparisonTable(Long firstCarId, Long secondCarId, boolean showOnlyDifference) {
-        CarDto firstCar = carMapper.toDto(carRepository.findById(firstCarId).orElse(null));
-        CarDto secondCar = carMapper.toDto(carRepository.findById(secondCarId).orElse(null));
+        try {
+            CarDto firstCar = carMapper.toDto(carRepository.findById(firstCarId).orElse(null));
+            CarDto secondCar = carMapper.toDto(carRepository.findById(secondCarId).orElse(null));
 
-        if (firstCar == null) {
-            return HtmlGenerator.generateErrorMessage("Car with ID " + firstCarId + " not found.");
-        }
+            if (firstCar == null) {
+                return HtmlGenerator.generateErrorMessage("Car with ID " + firstCarId + " not found.");
+            }
 
-        if (secondCar == null) {
-            return HtmlGenerator.generateErrorMessage("Car with ID " + secondCarId + " not found.");
-        }
+            if (secondCar == null) {
+                return HtmlGenerator.generateErrorMessage("Car with ID " + secondCarId + " not found.");
+            }
 
-        List<String> carAttributes = getAllAttributes(firstCar);
-        List<String> firstCarValues = getAttributeValues(firstCar, carAttributes);
-        List<String> secondCarValues = getAttributeValues(secondCar, carAttributes);
+            List<String> carAttributes = getAllAttributes(firstCar);
+            List<String> firstCarValues = getAttributeValues(firstCar, carAttributes);
+            List<String> secondCarValues = getAttributeValues(secondCar, carAttributes);
 
-        List<String> specificationsAttributes = getAllAttributes(firstCar.getSpecifications());
-        List<String> specificationsFirstCarValues = getAttributeValues(firstCar.getSpecifications(), specificationsAttributes);
-        List<String> specificationsSecondCarValues = getAttributeValues(secondCar.getSpecifications(), specificationsAttributes);
+            List<String> specificationsAttributes = getAllAttributes(firstCar.getSpecifications());
+            List<String> specificationsFirstCarValues = getAttributeValues(firstCar.getSpecifications(), specificationsAttributes);
+            List<String> specificationsSecondCarValues = getAttributeValues(secondCar.getSpecifications(), specificationsAttributes);
 
-        List<String> featuresAttributes = getAllAttributes(firstCar.getFeatures());
-        List<String> featuresFirstCarValues = getAttributeValues(firstCar.getFeatures(), featuresAttributes);
-        List<String> featuresSecondCarValues = getAttributeValues(secondCar.getFeatures(), featuresAttributes);
+            List<String> featuresAttributes = getAllAttributes(firstCar.getFeatures());
+            List<String> featuresFirstCarValues = getAttributeValues(firstCar.getFeatures(), featuresAttributes);
+            List<String> featuresSecondCarValues = getAttributeValues(secondCar.getFeatures(), featuresAttributes);
 
-        if(showOnlyDifference){
-            return HtmlGenerator.generateDifferencesTable(
-                    firstCar.getName(), secondCar.getName(),
-                    carAttributes, firstCarValues, secondCarValues,
-                    specificationsAttributes, specificationsFirstCarValues, specificationsSecondCarValues,
-                    featuresAttributes, featuresFirstCarValues, featuresSecondCarValues
-            );
-        }else{
-            return HtmlGenerator.generateComparisonTable(
-                    firstCar.getName(), secondCar.getName(),
-                    carAttributes, firstCarValues, secondCarValues,
-                    specificationsAttributes, specificationsFirstCarValues, specificationsSecondCarValues,
-                    featuresAttributes, featuresFirstCarValues, featuresSecondCarValues
-            );
+            if (showOnlyDifference) {
+                return HtmlGenerator.generateDifferencesTable(
+                        firstCar.getName(), secondCar.getName(),
+                        carAttributes, firstCarValues, secondCarValues,
+                        specificationsAttributes, specificationsFirstCarValues, specificationsSecondCarValues,
+                        featuresAttributes, featuresFirstCarValues, featuresSecondCarValues
+                );
+            } else {
+                return HtmlGenerator.generateComparisonTable(
+                        firstCar.getName(), secondCar.getName(),
+                        carAttributes, firstCarValues, secondCarValues,
+                        specificationsAttributes, specificationsFirstCarValues, specificationsSecondCarValues,
+                        featuresAttributes, featuresFirstCarValues, featuresSecondCarValues
+                );
+            }
+        }catch (Exception e) {
+            throw new ServiceException("An error occurred while retrieving similar cars", e);
         }
     }
 
