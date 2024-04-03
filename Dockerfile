@@ -5,7 +5,7 @@ FROM amazoncorretto:17 AS builder
 WORKDIR /app
 
 # Copy the packaged JAR file into the container
-COPY target/your-application.jar /app/comparison-0.0.1-SNAPSHOT.jar
+COPY target/comparison-0.0.1-SNAPSHOT.jar /app/comparison-0.0.1-SNAPSHOT.jar
 
 # Expose the port that your application runs on
 EXPOSE 8080
